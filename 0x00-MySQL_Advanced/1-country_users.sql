@@ -5,7 +5,7 @@
 -- name, string (255 characters)
 -- country, enumeration of countries: US, CO and TN, never null
 -- (= default will be the first element of the enumeration, here US)
-CREATE Table users if not exist (
+CREATE Table if not exist users (
     id INT NOT NULL auto increment primary key,
     email VARCHAR(225) NOT NULL UNIQUE,
     name VARCHAR(225),
