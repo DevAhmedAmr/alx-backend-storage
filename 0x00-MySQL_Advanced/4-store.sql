@@ -8,25 +8,3 @@ INSERT ON orders FOR EACH ROW
 UPDATE items
 SET quantity = quantity - NEW.number
 WHERE name = NEW.item_name;
--- -- @block
--- DROP TRIGGER decrease_item;
--- ---
--- ---
--- ---
--- --
--- -- @block
--- INSERT INTO orders (item_name, number)
--- VALUES ('apple', 1);
--- INSERT INTO orders (item_name, number)
--- VALUES ('apple', 3);
--- INSERT INTO orders (item_name, number)
--- VALUES ('pear', 2);
--- --
--- --
--- --
--- --
--- -- @block
--- SELECT *
--- FROM items;
--- SELECT *
--- FROM orders;
