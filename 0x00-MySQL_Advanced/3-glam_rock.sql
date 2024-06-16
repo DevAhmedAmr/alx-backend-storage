@@ -1,6 +1,7 @@
--- a SQL script that ranks country origins of bands,
--- ordered by the number of (non - unique) fans
-SELECT style,
-	formed
+-- script that lists all bands with Glam rock as 
+-- their main style, ranked by their longevity
+SELECT band_name,
+	split - formed as lifespan
 FROM metal_bands
-WHERE style = "glam rock" -- ORDER BY formed DESC
+WHERE style like '%Glam rock%'
+ORDER BY lifespan DESC;
