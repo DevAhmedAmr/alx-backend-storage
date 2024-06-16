@@ -4,10 +4,10 @@
 ---- @block
 CREATE TRIGGER decrease_items_quantity
 AFTER
-INSERT ON orders for each row
+INSERT ON orders FOR EACH ROW
 UPDATE items
-set quantity = quantity - new.number
-where name = new.item_name;
+SET quantity = quantity - NEW.number
+WHERE name = NEW.item_name;
 -- -- @block
 -- DROP TRIGGER decrease_item;
 -- ---
