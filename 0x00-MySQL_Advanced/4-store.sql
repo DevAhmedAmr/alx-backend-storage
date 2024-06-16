@@ -2,13 +2,12 @@
 --the quantity of an item after adding a new order.
 -- Quantity in the table items can be negative.
 ---- @block
-CREATE TRIGGER decrease_item
+CREATE TRIGGER decrease_items_quantity
 AFTER
-INSERT ON orders FOR EACH ROW BEGIN
+INSERT ON orders for each row
 UPDATE items
-SET quantity = quantity - NEW.number
-WHERE name = NEW.item_name;
-END;
+set quantity = quantity - new.number
+where name = new.item_name;
 -- -- @block
 -- DROP TRIGGER decrease_item;
 -- ---
