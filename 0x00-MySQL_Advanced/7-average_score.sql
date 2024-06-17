@@ -11,11 +11,11 @@ BEGIN
 	SELECT AVG(score)
 	INTO avg_score
 	FROM corrections 
-	WHERE user_id = user_id_input;
+	WHERE corrections.user_id  = user_id_input;
 
 	UPDATE users
 	set average_score = avg_score
-	WHERE user_id = user_id_input;
+	WHERE id  = user_id_input;
 
 END$$
 
