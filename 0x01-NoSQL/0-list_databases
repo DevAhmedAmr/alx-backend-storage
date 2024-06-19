@@ -1,2 +1,2 @@
-// Write a script that lists all databases in MongoDB
+#!/usr/bin/env bash
 show dbs

@@ -1,3 +1,1 @@
-// Displays the number of documents in the collection school
-// database name will be passed as option of mongo command
-db.school.count()
+#!/usr/bin/env bash

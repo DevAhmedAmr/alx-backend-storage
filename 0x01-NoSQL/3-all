@@ -1,3 +1,1 @@
-// List all documents in the collection school
-// database name must be passed as option of mongo command
-db.school.find()
+#!/usr/bin/env bash
