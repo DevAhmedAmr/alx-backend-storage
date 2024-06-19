@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# from pymongo.aggregation import Collection
+# from pymongo.typings import Collection
 """ inserts a new document in a collection based on kwargs"""
 
 
