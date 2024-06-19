@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-from pymongo import MongoClient
-
 """Python script that provides some stats
                 about Nginx logs stored in MongoDB:"""
+
+from pymongo import MongoClient
+
 
 if "__main__" == __name__:
 
