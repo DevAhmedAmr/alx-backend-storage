@@ -3,7 +3,11 @@ from pymongo import MongoClient
 
 """Python script that provides some stats
                 about Nginx logs stored in MongoDB:"""
+
 if "__main__" == __name__:
+
+    """Python script that provides some stats
+                about Nginx logs stored in MongoDB:"""
 
     client = MongoClient('mongodb://127.0.0.1:27017')
     # client.get_database("logs").get_collection("nginx")
