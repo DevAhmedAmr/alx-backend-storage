@@ -12,7 +12,6 @@ if "__main__" == __name__:
 
     client = MongoClient('mongodb://127.0.0.1:27017')
     # client.get_database("logs").get_collection("nginx")
-    client.get_database().get_collection()
 
     nginx_collection = client.logs.nginx
 
