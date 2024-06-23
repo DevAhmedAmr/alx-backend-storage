@@ -3,6 +3,7 @@
 """
 import redis
 from uuid import uuid4
+from typing import Any, Callable, Optional, Union
 
 port = 6380
 
@@ -12,7 +13,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
-    def store(self, data: int | bytes | int | float) -> str:
+    def store(self, data: Union[str, bytes, int, float]) -> str:
         id = str(uuid4())
         self._redis.set(id, data)
         return id
