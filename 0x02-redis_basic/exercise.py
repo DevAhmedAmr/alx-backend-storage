@@ -18,11 +18,12 @@ class Cache:
         return id
 
 
-cache = Cache()
+if "__main__" == __name__:
+    cache = Cache()
 
-data = b"hello"
-key = cache.store(data)
-print(key)
+    data = b"hello"
+    key = cache.store(data)
+    print(key)
 
-local_redis = redis.Redis()
-print(local_redis.get(key))
+    local_redis = redis.Redis()
+    print(local_redis.get(key))
