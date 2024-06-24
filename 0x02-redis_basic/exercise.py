@@ -49,7 +49,7 @@ if "__main__" == __name__:
     TEST_CASES = {
         b"foo": None,
         123: int,
-        "bar": lambda d: d.decode("utf-8")
+        "bar": lambda data: data.decode("utf-8")
     }
 
     for value, fn in TEST_CASES.items():
