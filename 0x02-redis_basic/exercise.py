@@ -7,6 +7,33 @@ from typing import Any, Callable, Optional, Union
 from functools import wraps
 
 
+def replay(f: Callable):
+    """ display the history of calls of a particular function.
+
+    Args:
+        f (Callable): function
+
+    Returns:
+        None: None
+    """
+    @wraps(f)
+    def wrapper(self, *args, **kwargs):
+
+        output_func_name = f.__qualname__ + ":outputs"
+        input_func_name = f.__qualname__ + ":inputs"
+        output = self._redis.lrange(output_func_name, 0, -1)
+        input = self._redis.lrange(input_func_name, 0, -1)
+
+        print(f.__qualname__ + f" was called {len(output)} times")
+        for out, inp in zip(output, input):
+            out = out.decode('utf-8')
+            inp = inp.decode('utf-8')
+
+            print(f"{f.__qualname__}(*{inp}) -> {out}")
+
+    return wrapper
+
+
 def call_history(method: Callable) -> Callable:
     """
     1- function
@@ -77,23 +104,13 @@ class Cache:
 if "__main__" == __name__:
 
     cache = Cache()
+    cache.store("foo")
+    cache.store("bar")
+    cache.store(42)
 
-    s1 = cache.store("first")
-    print(s1)
-    s2 = cache.store("secont")
-    print(s2)
-    s3 = cache.store("third")
-    print(s3)
+    replay_method = replay(cache.store)
+    replay_method(cache)
 
-    inputs = cache._redis.lrange(
-        "{}:inputs".format(
-            cache.store.__qualname__), 0, -1)
-    outputs = cache._redis.lrange(
-        "{}:outputs".format(
-            cache.store.__qualname__), 0, -1)
-
-    print("inputs: {}".format(inputs))
-    print("outputs: {}".format(outputs))
 
 # def random_power(x):
 #     def f(x):
