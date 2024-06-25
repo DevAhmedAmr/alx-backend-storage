@@ -62,11 +62,6 @@ class Cache:
         return int(data)
 
 
-@count_calls
-def x():
-    print("zby")
-
-
 if "__main__" == __name__:
 
     cache = Cache()
