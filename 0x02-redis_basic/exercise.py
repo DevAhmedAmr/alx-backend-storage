@@ -8,11 +8,10 @@ from functools import wraps
 
 
 def replay(method: Callable) -> None:
-    """ display the history of calls of a particular function.
-
+    """
+    Replays the history of a function
     Args:
-        method : function
-
+        method: The function to be decorated
     Returns:
         None
     """
