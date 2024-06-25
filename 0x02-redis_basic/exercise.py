@@ -16,17 +16,19 @@ def replay(method: Callable):
     Returns:
         None: None
     """
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
 
-        output_func_name = method.__qualname__ + ":outputs"
-        input_func_name = method.__qualname__ + ":inputs"
+        func_name = method.__qualname__
+        output_name = func_name + ":outputs"
+        input_name = func_name + ":inputs"
 
-        output = self._redis.lrange(output_func_name, 0, -1)
-        input = self._redis.lrange(input_func_name, 0, -1)
+        output = self._redis.lrange(output_name, 0, -1)
+        input = self._redis.lrange(input_name, 0, -1)
+        calls_number = self._redis.get(func_name).decode("utf-8")
 
-        name = method.__qualname__
-        print(name + f" was called {self._redis.get(name)} times")
+        print(func_name + f" was called {calls_number} times")
         for out, inp in zip(output, input):
             out = out.decode('utf-8')
             inp = inp.decode('utf-8')
