@@ -66,6 +66,11 @@ def count_calls(method: Callable) -> Callable:
 
 
 class Cache:
+    """
+        class to cash some data
+
+    """
+
     def __init__(self) -> None:
         self._redis = redis.Redis()
         self._redis.flushdb()
