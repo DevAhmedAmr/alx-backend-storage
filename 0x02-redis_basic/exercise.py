@@ -7,31 +7,24 @@ from typing import Any, Callable, Optional, Union
 from functools import wraps
 
 
-def replay(method: Callable):
-    """ display the history of calls of a particular function.
-
-    Args:
-        f (Callable): function
-
-    Returns:
-        None: None
+def replay(method: Callable) -> None:
+    # sourcery skip: use-fstring-for-concatenation, use-fstring-for-formatting
     """
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-
-        output_func_name = method.__qualname__ + ":outputs"
-        input_func_name = method.__qualname__ + ":inputs"
-        output = self._redis.lrange(output_func_name, 0, -1)
-        input = self._redis.lrange(input_func_name, 0, -1)
-
-        print(method.__qualname__ + f" was called {len(output)} times")
-        for out, inp in zip(output, input):
-            out = out.decode('utf-8')
-            inp = inp.decode('utf-8')
-
-            print(f"{method.__qualname__}(*{inp}) -> {out}")
-
-    return wrapper
+    Replays the history of a function
+    Args:
+        method: The function to be decorated
+    Returns:
+        None
+    """
+    name = method.__qualname__
+    cache = redis.Redis()
+    calls = cache.get(name).decode("utf-8")
+    print("{} was called {} times:".format(name, calls))
+    inputs = cache.lrange(name + ":inputs", 0, -1)
+    outputs = cache.lrange(name + ":outputs", 0, -1)
+    for i, o in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(name, i.decode('utf-8'),
+                                     o.decode('utf-8')))
 
 
 def call_history(method: Callable) -> Callable:
