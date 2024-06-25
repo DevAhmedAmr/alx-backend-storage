@@ -8,6 +8,7 @@ from functools import wraps
 
 
 def replay(method: Callable) -> None:
+    # sourcery skip: use-fstring-for-concatenation, use-fstring-for-formatting
     """
     Replays the history of a function
     Args:
@@ -15,23 +16,15 @@ def replay(method: Callable) -> None:
     Returns:
         None
     """
+    name = method.__qualname__
     cache = redis.Redis()
-    func_name = method.__qualname__
-    output_name = func_name + ":outputs"
-    input_name = func_name + ":inputs"
-
-    output = cache.lrange(output_name, 0, -1)
-    input = cache.lrange(input_name, 0, -1)
-    calls_number = cache.get(func_name).decode("utf-8")
-
-    print(func_name + f" was called {calls_number} times:")
-    for out, inp in zip(output, input):
-        out = out.decode('utf-8')
-        inp = inp.decode('utf-8')
-
-        print(f"{method.__qualname__}(*{inp}) -> {out}")
-
-    return None
+    calls = cache.get(name).decode("utf-8")
+    print("{} was called {} times:".format(name, calls))
+    inputs = cache.lrange(name + ":inputs", 0, -1)
+    outputs = cache.lrange(name + ":outputs", 0, -1)
+    for i, o in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(name, i.decode('utf-8'),
+                                     o.decode('utf-8')))
 
 
 def call_history(method: Callable) -> Callable:
@@ -114,22 +107,3 @@ if "__main__" == __name__:
     cache.store(42)
 
     replay_method = replay(cache.store)
-
-
-# def random_power(x):
-#     def f(x):
-#         return x**2
-
-#     def g(y):
-#         return y**3
-
-#     def h(z):
-#         return z**4
-#     functions = [f, g, h]
-#     return random.choice(functions)(x)
-
-# for i in range(3):
-#     p = random_power(i)
-#     print(p)
-# for i in range(100):
-#     x()
