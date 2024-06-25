@@ -25,7 +25,7 @@ def replay(method: Callable):
     input = cache.lrange(input_name, 0, -1)
     calls_number = cache.get(func_name).decode("utf-8")
 
-    print(func_name + f" was called {calls_number} times")
+    print(func_name + f" was called {calls_number} times:")
     for out, inp in zip(output, input):
         out = out.decode('utf-8')
         inp = inp.decode('utf-8')
