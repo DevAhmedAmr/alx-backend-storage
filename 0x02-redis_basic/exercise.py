@@ -11,10 +11,10 @@ def replay(method: Callable) -> None:
     """ display the history of calls of a particular function.
 
     Args:
-        f (Callable): function
+        method (Callable): function
 
     Returns:
-        None: None
+        None
     """
     cache = redis.Redis()
     func_name = method.__qualname__
