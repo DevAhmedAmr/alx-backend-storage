@@ -12,10 +12,10 @@ def count_calls(func: callable) -> callable:
     called and returns the value returned by the original method.
     """
     @wraps(func)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(*args, **kwargs):
         key = func.__qualname__
-        self._redis.incr(key)
-        return func(self, *args, **kwargs)
+        args[0]._redis.incr(key)
+        return func(args[0], *args, **kwargs)
 
     return wrapper
 
