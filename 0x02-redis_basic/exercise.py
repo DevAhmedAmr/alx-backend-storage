@@ -18,7 +18,6 @@ def count_calls(func: callable) -> callable:
     """
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        print(args)
         key = func.__qualname__
         self._redis.incr(key)
         return func(self, *args, **kwargs)
