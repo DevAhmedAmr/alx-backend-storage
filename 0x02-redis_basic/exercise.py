@@ -4,8 +4,26 @@
 import redis
 from uuid import uuid4
 from typing import Any, Callable, Optional, Union
+from functools import wraps
 
-port = 6379
+
+def count_calls(func: callable) -> callable:
+    """wrapper that count calls
+
+    Args:
+        func (callable): any function
+
+    Returns:
+        func
+    """
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        print(args)
+        key = func.__qualname__
+        self._redis.incr(key)
+        return func(self, *args, **kwargs)
+
+    return wrapper
 
 
 class Cache:
@@ -13,6 +31,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         id = str(uuid4())
         self._redis.set(id, data)
@@ -43,17 +62,39 @@ class Cache:
         return int(data)
 
 
+@count_calls
+def x():
+    print("zby")
+
+
 if "__main__" == __name__:
+
     cache = Cache()
 
-    TEST_CASES = {
-        b"foo": None,
-        123: int,
-        "bar": lambda data: data.decode("utf-8")
-    }
+    print(cache._redis.keys("*"))
+    print(cache.get("Cache.store"))
+    cache.store(b"first")
 
-    for value, fn in TEST_CASES.items():
-        key = cache.store(value)
-        print(cache.get(key, fn=fn), value)
+    print(cache.get(cache.store.__qualname__))
 
-        assert cache.get(key, fn=fn) == value
+    cache.store(b"second")
+    cache.store(b"third")
+    print(cache.get(cache.store.__qualname__))
+
+# def random_power(x):
+#     def f(x):
+#         return x**2
+
+#     def g(y):
+#         return y**3
+
+#     def h(z):
+#         return z**4
+#     functions = [f, g, h]
+#     return random.choice(functions)(x)
+
+# for i in range(3):
+#     p = random_power(i)
+#     print(p)
+# for i in range(100):
+#     x()
