@@ -19,6 +19,7 @@ def replay(method: Callable):
 
     @wraps(method)
     def wrapper(self, *args, **kwargs):
+        """ wrapper """
 
         func_name = method.__qualname__
         output_name = func_name + ":outputs"
