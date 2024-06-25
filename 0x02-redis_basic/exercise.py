@@ -16,27 +16,23 @@ def replay(method: Callable):
     Returns:
         None: None
     """
+    cache = redis.Redis()
+    func_name = method.__qualname__
+    output_name = func_name + ":outputs"
+    input_name = func_name + ":inputs"
 
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        """ wrapper """
+    output = cache.lrange(output_name, 0, -1)
+    input = cache.lrange(input_name, 0, -1)
+    calls_number = cache.get(func_name).decode("utf-8")
 
-        func_name = method.__qualname__
-        output_name = func_name + ":outputs"
-        input_name = func_name + ":inputs"
+    print(func_name + f" was called {calls_number} times")
+    for out, inp in zip(output, input):
+        out = out.decode('utf-8')
+        inp = inp.decode('utf-8')
 
-        output = self._redis.lrange(output_name, 0, -1)
-        input = self._redis.lrange(input_name, 0, -1)
-        calls_number = self._redis.get(func_name).decode("utf-8")
+        print(f"{method.__qualname__}(*{inp}) -> {out}")
 
-        print(func_name + f" was called {calls_number} times")
-        for out, inp in zip(output, input):
-            out = out.decode('utf-8')
-            inp = inp.decode('utf-8')
-
-            print(f"{method.__qualname__}(*{inp}) -> {out}")
-
-    return wrapper
+    return None
 
 
 def call_history(method: Callable) -> Callable:
@@ -114,7 +110,6 @@ if "__main__" == __name__:
     cache.store(42)
 
     replay_method = replay(cache.store)
-    replay_method(cache)
 
 
 # def random_power(x):
