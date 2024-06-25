@@ -7,7 +7,7 @@ from typing import Any, Callable, Optional, Union
 from functools import wraps
 
 
-def replay(f: Callable):
+def replay(method: Callable):
     """ display the history of calls of a particular function.
 
     Args:
@@ -16,20 +16,20 @@ def replay(f: Callable):
     Returns:
         None: None
     """
-    @wraps(f)
+    @wraps(method)
     def wrapper(self, *args, **kwargs):
 
-        output_func_name = f.__qualname__ + ":outputs"
-        input_func_name = f.__qualname__ + ":inputs"
+        output_func_name = method.__qualname__ + ":outputs"
+        input_func_name = method.__qualname__ + ":inputs"
         output = self._redis.lrange(output_func_name, 0, -1)
         input = self._redis.lrange(input_func_name, 0, -1)
 
-        print(f.__qualname__ + f" was called {len(output)} times")
+        print(method.__qualname__ + f" was called {len(output)} times")
         for out, inp in zip(output, input):
             out = out.decode('utf-8')
             inp = inp.decode('utf-8')
 
-            print(f"{f.__qualname__}(*{inp}) -> {out}")
+            print(f"{method.__qualname__}(*{inp}) -> {out}")
 
     return wrapper
 
