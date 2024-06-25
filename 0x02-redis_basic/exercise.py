@@ -7,6 +7,24 @@ from typing import Any, Callable, Optional, Union
 from functools import wraps
 
 
+def call_history(f: Callable) -> Callable:
+    """
+    1- function
+    2- wraps returns function
+    3- return wraps
+    """
+    @wraps(f)
+    def wrapper(self, *args, **kwargs):
+
+        id = f(self, *args, **kwargs)
+
+        self._redis.rpush(f"{f.__qualname__}:outputs", str(id))
+        self._redis.rpush(f"{f.__qualname__}:inputs", str(args))
+        return id
+    return wrapper
+    # ---------------------
+
+
 def count_calls(method: Callable) -> Callable:
     """Increments the count for that key every time the method is
     called and returns the value returned by the original method.
@@ -24,6 +42,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         id = str(uuid4())
@@ -59,15 +78,22 @@ if "__main__" == __name__:
 
     cache = Cache()
 
-    print(cache._redis.keys("*"))
-    print(cache.get("Cache.store"))
-    cache.store(b"first")
+    s1 = cache.store("first")
+    print(s1)
+    s2 = cache.store("secont")
+    print(s2)
+    s3 = cache.store("third")
+    print(s3)
 
-    print(cache.get(cache.store.__qualname__))
+    inputs = cache._redis.lrange(
+        "{}:inputs".format(
+            cache.store.__qualname__), 0, -1)
+    outputs = cache._redis.lrange(
+        "{}:outputs".format(
+            cache.store.__qualname__), 0, -1)
 
-    cache.store(b"second")
-    cache.store(b"third")
-    print(cache.get(cache.store.__qualname__))
+    print("inputs: {}".format(inputs))
+    print("outputs: {}".format(outputs))
 
 # def random_power(x):
 #     def f(x):
