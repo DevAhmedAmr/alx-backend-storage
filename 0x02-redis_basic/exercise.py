@@ -7,19 +7,19 @@ from typing import Any, Callable, Optional, Union
 from functools import wraps
 
 
-def call_history(f: Callable) -> Callable:
+def call_history(method: Callable) -> Callable:
     """
     1- function
     2- wraps returns function
     3- return wraps
     """
-    @wraps(f)
+    @wraps(method)
     def wrapper(self, *args, **kwargs):
 
-        id = f(self, *args, **kwargs)
+        id = method(self, *args, **kwargs)
 
-        self._redis.rpush(f"{f.__qualname__}:outputs", str(id))
-        self._redis.rpush(f"{f.__qualname__}:inputs", str(args))
+        self._redis.rpush(f"{method.__qualname__}:outputs", str(id))
+        self._redis.rpush(f"{method.__qualname__}:inputs", str(args))
         return id
     return wrapper
     # ---------------------
