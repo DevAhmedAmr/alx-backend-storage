@@ -7,15 +7,16 @@ from typing import Any, Callable, Optional, Union
 from functools import wraps
 
 
-def count_calls(method: Callable) -> Callable:
+def count_calls(func: callable) -> callable:
     """Increments the count for that key every time the method is
     called and returns the value returned by the original method.
     """
-    @wraps(method)
+    @wraps(func)
     def wrapper(self, *args, **kwargs):
-        key = method.__qualname__
+        key = func.__qualname__
         self._redis.incr(key)
-        return method(self, *args, **kwargs)
+        return func(self, *args, **kwargs)
+
     return wrapper
 
 
